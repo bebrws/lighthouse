@@ -11,11 +11,12 @@ from .python import *
 
 BADADDR = 0xFFFFFFFFFFFFFFFF
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Plugin Util
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 PLUGIN_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
 
 def plugin_resource(resource_name):
     """
@@ -28,15 +29,17 @@ def plugin_resource(resource_name):
         resource_name
     )
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Thread Util
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 def is_mainthread():
     """
     Return a bool that indicates if this is the main application thread.
     """
     return isinstance(threading.current_thread(), threading._MainThread)
+
 
 def mainthread(f):
     """
@@ -47,6 +50,7 @@ def mainthread(f):
         return f(*args, **kwargs)
     return wrapper
 
+
 def not_mainthread(f):
     """
     A debug decorator to ensure that a function is never called from the main thread.
@@ -56,15 +60,17 @@ def not_mainthread(f):
         return f(*args, **kwargs)
     return wrapper
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Theme Util
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 def swap_rgb(i):
     """
     Swap RRGGBB (integer) to BBGGRR.
     """
     return struct.unpack("<I", struct.pack(">I", i))[0] >> 8
+
 
 def test_color_brightness(color):
     """
@@ -75,9 +81,10 @@ def test_color_brightness(color):
     else:
         return "dark"
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Python Util
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 def makedirs(path, exists_ok=True):
     """
@@ -91,6 +98,7 @@ def makedirs(path, exists_ok=True):
         if not exists_ok:
             raise e
 
+
 def chunks(l, n):
     """
     Yield successive n-sized chunks from a list (l).
@@ -100,6 +108,7 @@ def chunks(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i + n]
 
+
 def hex_list(items):
     """
     Return a string of a python-like list, with hex numbers.
@@ -108,12 +117,14 @@ def hex_list(items):
     """
     return '[{}]'.format(', '.join('0x%X' % x for x in items))
 
+
 def human_timestamp(timestamp):
     """
     Return a human readable timestamp for a given epoch.
     """
     dt = datetime.datetime.fromtimestamp(timestamp)
     return dt.strftime("%b %d %Y %H:%M:%S")
+
 
 def get_string_between(text, before, after):
     """
@@ -125,9 +136,10 @@ def get_string_between(text, before, after):
         return None
     return result.group(1)
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Python Callback / Signals
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 def register_callback(callback_list, callback):
     """
@@ -138,7 +150,8 @@ def register_callback(callback_list, callback):
 
     # create a weakref callback to an object method
     try:
-        callback_ref = weakref.ref(callback.__func__), weakref.ref(callback.__self__)
+        callback_ref = weakref.ref(
+            callback.__func__), weakref.ref(callback.__self__)
 
     # create a wweakref callback to a stand alone function
     except AttributeError:
@@ -146,6 +159,7 @@ def register_callback(callback_list, callback):
 
     # 'register' the callback
     callback_list.append(callback_ref)
+
 
 def notify_callback(callback_list, *args):
     """
@@ -207,4 +221,3 @@ def notify_callback(callback_list, *args):
     # remove the deleted callbacks
     for callback_ref in cleanup:
         callback_list.remove(callback_ref)
-        
